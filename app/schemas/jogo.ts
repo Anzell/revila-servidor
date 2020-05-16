@@ -10,5 +10,6 @@ export default gql`
     input JogoFiltro{
         id:Int
         busca:String
+        offset:Int
     }
 `;
