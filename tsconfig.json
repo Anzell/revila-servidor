@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "app",
+    "target": "es2015",
+    "module": "commonjs",
+    "esModuleInterop": true
+  }
+}
