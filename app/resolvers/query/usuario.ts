@@ -27,11 +27,16 @@ export const UsuarioResolver = {
             if (!email || !senha) {
                 return null;
             }
-            const usuarioFirebase = await envs.firebase.auth().signInWithEmailAndPassword(email, senha);
+            const usuarioFirebase = await envs.f.auth().signInWithEmailAndPassword(email, senha);
             const usuario = await envs.bd.model("Usuario").first("uid", usuarioFirebase.user.uid);
             return usuario.properties();
         } catch (e) {
-            throw new Error("Erro ao fazer login");
+            switch (e.code) {
+                case "auth/user-not-found":
+                    throw new Error("Email ou senha inválidos");
+                default:
+                    throw new Error("Erro ao fazer login");
+            }
         }
     },
 
@@ -40,7 +45,7 @@ export const UsuarioResolver = {
             if (!dados) {
                 return null;
             }
-            const usuarioFirebase = await envs.firebase.auth().signInWithCredential(credenciais);
+            const usuarioFirebase = await envs.f.auth().signInWithCredential(credenciais);
             dados.uid = usuarioFirebase.user.uid;
             const usuario = await envs.bd.model("Usuario").first("uid", dados.uid);
             return usuario.properties();
