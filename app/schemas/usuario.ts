@@ -2,6 +2,7 @@ import { gql } from "apollo-server"
 
 
 export default gql`
+    
     type Usuario{
         uid:String!
         nome:String!
@@ -21,4 +22,3 @@ export default gql`
         nickname:String
     }
 `;
-
