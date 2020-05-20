@@ -6,17 +6,17 @@ export const JogoResolver = {
             return null;
         }
         if (filtro.id) {
-            const jogoEncontrado = await envs.bd.first("Jogo", "id", filtro.id);
+            const jogoEncontrado = await envs.neo4j_bd.first("Jogo", "id", filtro.id);
             if (jogoEncontrado) {
                 return jogoEncontrado.properties();
             } else {
-                const { data } = await envs.bdJogos.fields(["name", "id", "cover.image_id"]).where(`id=${filtro.id}`).limit(1).request("/games");
+                const { data } = await envs.igbd_jogos.fields(["name", "id", "cover.image_id"]).where(`id=${filtro.id}`).limit(1).request("/games");
                 const jogoObj = {
                     id: data[0].id,
                     nome: data[0].name,
                     capa: data[0].cover ? `https://images.igdb.com/igdb/image/upload/t_cover_big/${data[0].cover.image_id}.jpg` : null
                 }
-                await envs.bd.create("Jogo", { ...jogoObj });
+                await envs.neo4j_bd.create("Jogo", { ...jogoObj });
                 return jogoObj;
             }
         }
@@ -26,7 +26,7 @@ export const JogoResolver = {
             return null;
         }
         if (filtro.busca) {
-            const { data } = await envs.bdJogos.fields(["name", "id", "cover.image_id"]).offset(filtro.offset).limit(10).search(`${filtro.busca}`).request("/games");
+            const { data } = await envs.igbd_jogos.fields(["name", "id", "cover.image_id"]).offset(filtro.offset).limit(10).search(`${filtro.busca}`).request("/games");
             console.log(data);
             const jogosEncontrados = [];
             for (let jogo of data) {

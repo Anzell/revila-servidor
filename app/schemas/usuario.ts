@@ -7,6 +7,7 @@ export default gql`
         uid:String!
         nome:String!
         email:String!
+        token:String
         nickname:String!
     }
 
@@ -20,5 +21,10 @@ export default gql`
     input UsuarioFiltro{
         uid:String
         nickname:String
+    }
+
+    input UsuarioLogin{
+        email:String!
+        senha:String!
     }
 `;

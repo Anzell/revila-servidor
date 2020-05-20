@@ -6,7 +6,7 @@ export default gql`
         usuario(filtro:UsuarioFiltro!):Usuario
         jogo(filtro:JogoFiltro!):Jogo
         buscaJogos(filtro:JogoFiltro!):[Jogo]
-        loginUsuarioEmailSenha(email:String!,senha:String!):Usuario
+        loginUsuarioEmailSenha(dados:UsuarioLogin!):Usuario
         loginUsuarioCredenciais(dados:UsuarioInput!,crendenciais:Map!):Usuario
     }
 `;

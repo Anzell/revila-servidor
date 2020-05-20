@@ -1,5 +1,5 @@
+require('dotenv').config()
 import { Servidor } from "./servidor/servidor";
-
 const servidor = new Servidor();
 
 servidor.bootstrap().then(_=>{

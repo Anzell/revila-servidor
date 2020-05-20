@@ -22,15 +22,34 @@ export const UsuarioResolver = {
     //     }
     // },
 
-    async loginUsuarioEmailSenha(_, { email, senha }) {
+    async loginUsuarioEmailSenha(_, { dados },context) {
         try {
-            if (!email || !senha) {
+            if (!dados.email || !dados.senha) {
                 return null;
             }
-            const usuarioFirebase = await envs.f.auth().signInWithEmailAndPassword(email, senha);
-            const usuario = await envs.bd.model("Usuario").first("uid", usuarioFirebase.user.uid);
-            return usuario.properties();
+            const usuarioFirebase = await envs.firebase.auth().signInWithEmailAndPassword(dados.email, dados.senha);
+            const usuario = await envs.neo4j_bd.model("Usuario").first("uid", usuarioFirebase.user.uid);
+            if(!usuario){
+                const usuarioNovoObj = {
+                    uid:usuarioFirebase.user.uid,
+                    email:usuarioFirebase.user.email,
+                    nome:usuarioFirebase.user.email.split("@")[0],
+                    nickname:usuarioFirebase.user.email.split("@")[0]
+                } 
+               
+                const usuarioNovo = await envs.neo4j_bd.model("Usuario").create({...usuarioNovoObj,ativo:1});
+                return usuarioNovo.properties()+await usuarioFirebase.user.getIdToken();
+            }
+            const usuarioEncontrado={
+                uid:usuario.get('uid'),
+                nome:usuario.get('nome'),
+                email:usuario.get('email'),
+                nickname:usuario.get('nickname'),
+                token:await usuarioFirebase.user.getIdToken()
+            };
+            return usuarioEncontrado;
         } catch (e) {
+            console.log(e)
             switch (e.code) {
                 case "auth/user-not-found":
                     throw new Error("Email ou senha inválidos");
@@ -45,9 +64,9 @@ export const UsuarioResolver = {
             if (!dados) {
                 return null;
             }
-            const usuarioFirebase = await envs.f.auth().signInWithCredential(credenciais);
+            const usuarioFirebase = await envs.firebase.auth().signInWithCredential(credenciais);
             dados.uid = usuarioFirebase.user.uid;
-            const usuario = await envs.bd.model("Usuario").first("uid", dados.uid);
+            const usuario = await envs.neo4j_bd.model("Usuario").first("uid", dados.uid);
             return usuario.properties();
         } catch (e) {
             throw new Error("Erro ao fazer login");
