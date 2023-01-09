@@ -14,7 +14,7 @@
     "apollo-server": "^2.13.1",
     "dotenv": "^8.2.0",
     "firebase": "^7.14.4",
-    "firebase-admin": "^8.12.1",
+    "firebase-admin": "^11.4.1",
     "graphql": "^15.0.0",
     "igdb-api-node": "^4.0.4",
     "neode": "^0.4.3"
